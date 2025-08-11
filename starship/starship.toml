@@ -1,0 +1,303 @@
+# =========================
+# Colt's Starship config
+# =========================
+# ~/.config/starship.toml — fully Nerd Font glyphified
+
+# --- Global layout ---
+add_newline = true
+continuation_prompt = " "  # NF glyph on wrapped lines
+
+format = """
+$os\
+$directory$git_branch$git_state$git_status\
+$kubernetes$aws$python$nodejs$terraform$package$custom.claude
+$line_break$character
+"""
+
+right_format = """
+$cmd_duration$memory_usage$time
+"""
+
+# --- OS Module (shows OS icon) ---
+[os]
+disabled = false
+format = "[$symbol]($style) "
+style = "bold white"
+
+[os.symbols]
+Windows = " "
+Arch = " "
+Ubuntu = " "
+Macos = " "
+Linux = " "
+
+# --- Directory ---
+[directory]
+truncation_length = 3
+truncation_symbol = "…/"
+read_only = " 󰌾"
+style = "bold cyan"
+
+# OS-specific home directory substitution
+[directory.substitutions]
+"~/Documents" = "󰈙 "
+"~/Downloads" = " "
+"~/Pictures" = " "
+"~/Projects" = " "
+"~/Code" = " "
+"~/dotfiles" = " "
+# Windows specific paths
+"C:/Users" = " "
+"C:/Program Files" = " "
+# Linux specific paths
+"/etc" = " "
+"/var" = " "
+"/usr/local" = " "
+
+# --- Git ---
+[git_branch]
+symbol = " "
+style  = "bold purple"
+format = "([$symbol$branch]($style) )"
+
+[git_state]
+format = ' [\($state( $progress_current of $progress_total)\)](bold yellow) '
+
+[git_status]
+conflicted = "󰞇 "
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕${count}"
+staged = "+${count}"
+modified = "~${count}"
+untracked = "?${count}"
+stashed = "●"
+renamed = "»"
+deleted = "✘${count}"
+style = "bold red"
+format = '([$all_status$ahead_behind]($style) )'
+
+# --- Shell indicator (shows current shell) ---
+[shell]
+disabled = false
+format = "[$indicator]($style) "
+style = "bold blue"
+bash_indicator = "bsh"
+fish_indicator = "fsh"
+zsh_indicator = ""  # Empty for zsh since it's default
+powershell_indicator = "psh"
+pwsh_indicator = "pwsh"
+cmd_indicator = "cmd"
+nu_indicator = "nu"
+unknown_indicator = "?"
+
+# --- Username (shown when not default user or over SSH) ---
+[username]
+disabled = false
+show_always = false
+format = "[$user]($style) "
+style_user = "bold yellow"
+style_root = "bold red"
+
+# --- Hostname (shown over SSH or in containers) ---
+[hostname]
+disabled = false
+ssh_only = true
+format = "[@$hostname]($style) "
+style = "bold green"
+
+# --- Kubernetes ---
+[kubernetes]
+disabled = false
+format = '[(⎈ $context:$namespace)]($style) '
+contexts = [
+  { context_pattern = ".*prod.*", style = "bold red" },
+  { context_pattern = ".*stg.*",  style = "bold yellow" },
+  { context_pattern = ".*",       style = "bold blue" }
+]
+
+# --- AWS ---
+[aws]
+format = '[( $profile)](bold yellow) '
+force_display = false
+[aws.region_aliases]
+us-east-1 = "use1"
+us-west-2 = "usw2"
+eu-west-1 = "euw1"
+
+# --- Python ---
+[python]
+format = '[( $virtualenv )(\($version\))]($style) '
+style = "bold green"
+pyenv_version_name = true
+detect_extensions = ["py", "ipynb"]
+detect_files = ["pyproject.toml", "requirements.txt", "Pipfile", "poetry.lock"]
+
+# --- Node / JS ---
+[nodejs]
+format = '[( $version)]($style) '
+style = "bold green"
+detect_files = ["package.json", "pnpm-lock.yaml", "yarn.lock", "bun.lockb"]
+
+# --- Rust ---
+[rust]
+format = '[( $version)]($style) '
+style = "bold red"
+
+# --- Go ---
+[golang]
+format = '[( $version)]($style) '
+style = "bold cyan"
+
+# --- Docker ---
+[docker_context]
+format = '[( $context)]($style) '
+style = "bold blue"
+only_with_files = true
+detect_files = ["docker-compose.yml", "docker-compose.yaml", "Dockerfile"]
+
+# --- Terraform ---
+[terraform]
+format = '[(󱑂 $workspace)]($style) '
+style = "bold magenta"
+
+# --- Package (generic project version) ---
+[package]
+display_private = true
+version_format = "v${raw}"
+format = '[(󰏗 $version)]($style) '
+style = "bold blue"
+
+# --- Memory Usage (useful for resource monitoring) ---
+[memory_usage]
+disabled = true  # Enable on systems where you want to monitor memory
+threshold = 75
+format = "[ ${ram_pct}]($style) "
+style = "bold red"
+
+# --- Battery (useful for laptops) ---
+[battery]
+disabled = false
+format = "[$symbol$percentage]($style) "
+
+[[battery.display]]
+threshold = 30
+style = "bold red"
+charging_symbol = "󰂄 "
+discharging_symbol = "󰁾 "
+
+[[battery.display]]
+threshold = 80
+style = "bold yellow"
+charging_symbol = "󰂄 "
+discharging_symbol = "󰂀 "
+
+[[battery.display]]
+threshold = 100
+style = "bold green"
+charging_symbol = "󰂄 "
+discharging_symbol = "󰁹 "
+
+# --- Right prompt modules ---
+[cmd_duration]
+min_time = 1500
+format = " [⏱ $duration]($style) "
+style = "bold green"
+show_milliseconds = false
+show_notifications = false
+
+[time]
+disabled = false
+time_format = "%H:%M"
+format = " [ $time]($style) "
+style = "bold white"
+# Use different time formats based on preference
+# time_format = "%I:%M %p"  # 12-hour format
+# time_format = "%H:%M:%S"  # Include seconds
+
+# --- Jobs indicator ---
+[jobs]
+format = "[$symbol$number]($style) "
+style = "bold blue"
+symbol = "✦ "
+threshold = 1
+
+# --- Status (exit code) ---
+[status]
+disabled = true  # We use character module for this
+format = "[$symbol$status]($style) "
+style = "bold red"
+symbol = "✖ "
+
+# --- Prompt glyphs ---
+[character]
+success_symbol = "[❯](bold green) "
+error_symbol   = "[❯](bold red) "
+vicmd_symbol   = "[❮](bold yellow) "
+
+# --- Environment Detection Custom Modules ---
+
+# Windows-specific indicator (shows Windows version)
+[custom.windows_ver]
+command = "cmd /c ver 2>/dev/null | grep -oE '[0-9]+\\.[0-9]+' | head -1"
+when = '[[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]] || [[ -n "$WINDIR" ]]'
+format = "[  $output]($style) "
+style = "bold blue"
+disabled = true  # Enable if you want to see Windows version
+
+# Linux distro indicator
+[custom.distro]
+command = "lsb_release -si 2>/dev/null || cat /etc/os-release 2>/dev/null | grep '^ID=' | cut -d= -f2"
+when = '[[ "$OSTYPE" == "linux-gnu"* ]]'
+format = "[  $output]($style) "
+style = "bold yellow"
+disabled = true  # Enable if you want to see distro name
+
+# macOS version indicator
+[custom.macos_ver]
+command = "sw_vers -productVersion 2>/dev/null"
+when = '[[ "$OSTYPE" == "darwin"* ]]'
+format = "[  $output]($style) "
+style = "bold white"
+disabled = true  # Enable if you want to see macOS version
+
+# WSL indicator
+[custom.wsl]
+command = "echo WSL"
+when = '[[ -n "$WSL_DISTRO_NAME" ]]'
+format = "[  $output]($style) "
+style = "bold magenta"
+disabled = false
+
+# Container indicator
+[container]
+format = '[[ $symbol $name ]]($style) '
+style = "bold red dimmed"
+symbol = "⬢"
+
+# --- Conda environment ---
+[conda]
+format = '[( $environment)]($style) '
+style = "bold green"
+ignore_base = true
+
+# --- Local IP (useful for servers) ---
+[localip]
+disabled = true  # Enable on servers
+ssh_only = true
+format = "[ $localipv4]($style) "
+style = "bold yellow"
+
+# --- Sudo indicator ---
+[sudo]
+disabled = false
+format = "[ ]($style) "
+style = "bold red"
+
+# --- Shlvl (shell level indicator) ---
+[shlvl]
+disabled = true  # Enable if you use nested shells often
+threshold = 2
+format = "[ $shlvl]($style) "
+style = "bold yellow"
+symbol = "↕"

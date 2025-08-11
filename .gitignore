@@ -1,0 +1,133 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+*.swp
+*.swo
+
+# Editor directories and files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.vim/
+.nvim/
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.save
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+tmp/
+temp/
+
+# Cache directories
+.cache/
+cache/
+*.cache
+
+# Log files
+*.log
+logs/
+.logs/
+
+# Sensitive files
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.crt
+*.p12
+secrets/
+.secrets/
+private/
+.private/
+.zshrc.local
+*.local
+
+# Neovim specific
+nvim/plugin/packer_compiled.lua
+nvim/.netrwhist
+nvim/spell/*.spl
+nvim/spell/*.sug
+nvim/shada/
+nvim/swap/
+nvim/undo/
+nvim/view/
+nvim/sessions/
+nvim/.luarc.json
+
+# Zsh specific
+zsh/.zcompdump*
+zsh/.zsh_history
+zsh/.zsh_sessions/
+zsh/cache/
+.zsh_history
+.zcompdump*
+
+# Starship specific
+starship/.config/
+
+# Wezterm specific
+wezterm/.wezterm.session
+
+# Git specific (for submodules)
+*.patch
+
+# Package manager artifacts
+node_modules/
+vendor/
+.bundle/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+.venv/
+
+# Rust
+target/
+Cargo.lock
+
+# macOS specific
+.CFUserTextEncoding
+.localized
+
+# Linux specific
+.directory
+.fuse_hidden*
+.nfs*
+
+# Archives
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.rar
+*.7z
+
+# Compiled/build files
+*.o
+*.so
+*.dylib
+*.exe
+*.dll
+*.out
+build/
+dist/
+out/
