@@ -67,38 +67,35 @@ install_arch() {
   log_info "Updating system packages..."
   sudo pacman -Syu --noconfirm
 
-  # Install base packages with pacman
-  log_info "Installing base packages..."
-  sudo pacman -S --needed --noconfirm \
-    base-devel \
-    git \
-    curl \
-    zsh \
-    python \
-    fzf \
-    gnu-netcat \
-    bind \
-    wget \
-    starship
-
-  # Install paru if not present
-  if ! command -v paru &>/dev/null; then
-    log_info "Installing paru..."
-    temp_dir=$(mktemp -d)
-    cd "$temp_dir"
-    git clone https://aur.archlinux.org/paru.git
-    cd paru
-    makepkg -si --noconfirm
-    cd "$HOME"
-    rm -rf "$temp_dir"
-  fi
-
-  # Install AUR packages with paru
-  log_info "Installing AUR packages..."
-  paru -S --needed --noconfirm \
-    neovim-nightly-bin \
-    zoxide-bin \
-    eza-bin
+  log_info "Installing base-devel and git for paru installation..."
+    sudo pacman -S --needed --noconfirm base-devel git
+    
+    # Install paru if not present
+    if ! command -v paru &> /dev/null; then
+        log_info "Installing paru..."
+        temp_dir=$(mktemp -d)
+        cd "$temp_dir"
+        git clone https://aur.archlinux.org/paru.git
+        cd paru
+        makepkg -si --noconfirm
+        cd "$HOME"
+        rm -rf "$temp_dir"
+    fi
+    
+    # Install all packages with paru (handles both official and AUR)
+    log_info "Installing all packages with paru..."
+    paru -S --needed --noconfirm \
+        curl \
+        wget \
+        zsh \
+        python \
+        fzf \
+        gnu-netcat \
+        bind \
+        starship \
+        neovim-nightly-bin \
+        zoxide-bin \
+        eza-bin
 
   # Install uv
   install_uv
