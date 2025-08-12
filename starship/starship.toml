@@ -10,7 +10,7 @@ continuation_prompt = " "  # NF glyph on wrapped lines
 format = """
 $os\
 $directory$git_branch$git_state$git_status\
-$kubernetes$aws$python$nodejs$terraform$package$custom.claude
+$aws$python$nodejs$terraform$package
 $line_break$character
 """
 
@@ -25,11 +25,11 @@ format = "[$symbol]($style) "
 style = "bold white"
 
 [os.symbols]
-Windows = " "
-Arch = " "
-Ubuntu = " "
-Macos = " "
-Linux = " "
+Windows = ""
+Arch    = ""
+Ubuntu  = ""
+Macos   = ""
+Linux   = ""
 
 # --- Directory ---
 [directory]
@@ -38,25 +38,26 @@ truncation_symbol = "…/"
 read_only = " 󰌾"
 style = "bold cyan"
 
-# OS-specific home directory substitution
 [directory.substitutions]
-"~/Documents" = "󰈙 "
-"~/Downloads" = " "
-"~/Pictures" = " "
-"~/Projects" = " "
-"~/Code" = " "
-"~/dotfiles" = " "
+"~/Documents"     = "󰈙 Documents"  
+"~/Downloads"     = " Downloads" 
+"~/Pictures"      = " Pictures"
+"~/Projects"      = "󰲋 Projects"
+"~/Code"          = "󰨞 Code"
+"~/dotfiles"      = " dotfiles"
+
 # Windows specific paths
-"C:/Users" = " "
-"C:/Program Files" = " "
+"C:/Users"        = " "
+"C:/Program Files"= "󰍛 "
+
 # Linux specific paths
-"/etc" = " "
-"/var" = " "
-"/usr/local" = " "
+"/etc"            = " "
+"/var"            = "󰋊 "
+"/usr/local"      = "󰏖 "
 
 # --- Git ---
 [git_branch]
-symbol = " "
+symbol = ""
 style  = "bold purple"
 format = "([$symbol$branch]($style) )"
 
@@ -115,6 +116,7 @@ contexts = [
   { context_pattern = ".*stg.*",  style = "bold yellow" },
   { context_pattern = ".*",       style = "bold blue" }
 ]
+detect_env_vars = []
 
 # --- AWS ---
 [aws]
