@@ -46,8 +46,8 @@ keybind = ctrl+space>-=new_split:down
 
 # Navigate splits (vim-style)
 keybind = ctrl+space>h=goto_split:left
-keybind = ctrl+space>j=goto_split:bottom
-keybind = ctrl+space>k=goto_split:top
+keybind = ctrl+space>j=goto_split:down
+keybind = ctrl+space>k=goto_split:up
 keybind = ctrl+space>l=goto_split:right
 
 # Tabs

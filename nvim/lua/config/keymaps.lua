@@ -33,12 +33,11 @@ map("v", ">", ">gv")
 -- Buffers
 map("n", "<S-h>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
 map("n", "<S-l>", "<cmd>bnext<CR>", { desc = "Next buffer" })
-map("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" })
+-- Note: <leader>bd handled by snacks.nvim (Snacks.bufdelete)
 
 -- Quickfix
 map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic quickfix" })
-map("n", "[q", "<cmd>cprev<CR>", { desc = "Previous quickfix" })
-map("n", "]q", "<cmd>cnext<CR>", { desc = "Next quickfix" })
+-- Note: [q/]q handled by trouble.nvim with smarter behavior
 
 -- Terminal
 map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })

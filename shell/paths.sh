@@ -15,5 +15,5 @@ fi
 # Cargo (Rust)
 [[ -d "$HOME/.cargo/bin" ]] && export PATH="$HOME/.cargo/bin:$PATH"
 
-# uv (Python package manager)
-[[ -d "$HOME/.uv/bin" ]] && export PATH="$HOME/.uv/bin:$PATH"
+# uv (Python package manager) - installs to ~/.local/bin since v0.5.0
+# (already covered by ~/.local/bin above)

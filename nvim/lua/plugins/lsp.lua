@@ -6,6 +6,7 @@ return {
     dependencies = {
       "mason.nvim",
       "mason-lspconfig.nvim",
+      "saghen/blink.cmp",
     },
     opts = {
       diagnostics = {

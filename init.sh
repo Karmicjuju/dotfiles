@@ -68,34 +68,34 @@ install_arch() {
   sudo pacman -Syu --noconfirm
 
   log_info "Installing base-devel and git for paru installation..."
-    sudo pacman -S --needed --noconfirm base-devel git
-    
-    # Install paru if not present
-    if ! command -v paru &> /dev/null; then
-        log_info "Installing paru..."
-        temp_dir=$(mktemp -d)
-        cd "$temp_dir"
-        git clone https://aur.archlinux.org/paru.git
-        cd paru
-        makepkg -si --noconfirm
-        cd "$HOME"
-        rm -rf "$temp_dir"
-    fi
-    
-    # Install all packages with paru (handles both official and AUR)
-    log_info "Installing all packages with paru..."
-    paru -S --needed --noconfirm \
-        curl \
-        wget \
-        zsh \
-        python \
-        fzf \
-        gnu-netcat \
-        bind \
-        starship \
-        neovim-nightly-bin \
-        zoxide-bin \
-        eza-bin
+  sudo pacman -S --needed --noconfirm base-devel git
+
+  # Install paru if not present
+  if ! command -v paru &> /dev/null; then
+    log_info "Installing paru..."
+    temp_dir=$(mktemp -d)
+    cd "$temp_dir"
+    git clone https://aur.archlinux.org/paru.git
+    cd paru
+    makepkg -si --noconfirm
+    cd "$HOME"
+    rm -rf "$temp_dir"
+  fi
+
+  # Install all packages with paru (handles both official and AUR)
+  log_info "Installing all packages with paru..."
+  paru -S --needed --noconfirm \
+    curl \
+    wget \
+    zsh \
+    python \
+    fzf \
+    gnu-netcat \
+    bind \
+    starship \
+    neovim-nightly-bin \
+    zoxide-bin \
+    eza-bin
 
   # Install uv
   install_uv
@@ -335,6 +335,9 @@ setup_dotfiles() {
     log_info "Linked .bashrc"
   fi
 
+  # Ensure ~/.config exists
+  mkdir -p "$HOME/.config"
+
   # Starship config
   if [ -f "$DOTFILES_DIR/starship/starship.toml" ]; then
     ln -sf "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
@@ -343,7 +346,8 @@ setup_dotfiles() {
 
   # Neovim config
   if [ -d "$DOTFILES_DIR/nvim" ]; then
-    ln -sf "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
+    rm -rf "$HOME/.config/nvim"
+    ln -sfn "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
     log_info "Linked nvim config"
   fi
 
@@ -386,9 +390,9 @@ configure_shell() {
   log_info "Configuring shell..."
 
   # Set zsh as default shell if not already
-  if [ "$SHELL" != "$(which zsh)" ]; then
+  if [ "$SHELL" != "$(command -v zsh)" ]; then
     log_info "Setting zsh as default shell..."
-    chsh -s "$(which zsh)"
+    chsh -s "$(command -v zsh)"
     log_warning "Shell changed to zsh. Please logout and login for changes to take effect."
   fi
 }
