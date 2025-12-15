@@ -1,0 +1,88 @@
+# Git configuration
+# Machine-specific settings (name, email, signing) go in ~/.gitconfig.local
+
+[include]
+    path = ~/.gitconfig.local
+
+[core]
+    editor = nvim
+    pager = less -FR
+    autocrlf = input
+    whitespace = fix
+
+[init]
+    defaultBranch = main
+
+[pull]
+    rebase = true
+
+[push]
+    default = current
+    autoSetupRemote = true
+
+[fetch]
+    prune = true
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
+[rebase]
+    autoStash = true
+
+[rerere]
+    enabled = true
+
+[alias]
+    # Status and info
+    s = status -sb
+    st = status
+
+    # Logging
+    lg = log --oneline --graph --decorate -20
+    ll = log --oneline -20
+    last = log -1 HEAD --stat
+
+    # Branches
+    br = branch
+    bra = branch -a
+    co = checkout
+    sw = switch
+    swc = switch -c
+
+    # Commits
+    cm = commit -m
+    ca = commit --amend
+    can = commit --amend --no-edit
+
+    # Diff
+    df = diff
+    dfs = diff --staged
+
+    # Stash
+    stl = stash list
+    stp = stash pop
+    sts = stash push -m
+
+    # Reset
+    unstage = reset HEAD --
+    undo = reset --soft HEAD~1
+
+    # Misc
+    aliases = config --get-regexp alias
+    whoami = !git config user.name && git config user.email
+
+[color]
+    ui = auto
+
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+
+[color "status"]
+    added = green
+    changed = yellow
+    untracked = red

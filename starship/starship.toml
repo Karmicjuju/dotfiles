@@ -1,11 +1,8 @@
-# =========================
-# Colt's Starship config
-# =========================
-# ~/.config/starship.toml — fully Nerd Font glyphified
+# Starship prompt configuration
+# Requires a Nerd Font for glyphs
 
-# --- Global layout ---
 add_newline = true
-continuation_prompt = " "  # NF glyph on wrapped lines
+continuation_prompt = " "
 
 format = """
 $os\
@@ -15,49 +12,39 @@ $line_break$character
 """
 
 right_format = """
-$cmd_duration$memory_usage$time
+$cmd_duration$time
 """
 
-# --- OS Module (shows OS icon) ---
+# --- OS Module ---
 [os]
 disabled = false
 format = "[$symbol]($style) "
 style = "bold white"
 
 [os.symbols]
-Windows = ""
-Arch    = ""
-Ubuntu  = ""
-Macos   = ""
-Linux   = ""
+Arch   = ""
+Ubuntu = ""
+Macos  = ""
+Linux  = ""
 
 # --- Directory ---
 [directory]
 truncation_length = 3
-truncation_symbol = "…/"
-read_only = " 󰌾"
+truncation_symbol = ".../"
+read_only = " "
 style = "bold cyan"
 
 [directory.substitutions]
-"~/Documents"     = "󰈙 Documents"  
-"~/Downloads"     = " Downloads" 
-"~/Pictures"      = " Pictures"
-"~/Projects"      = "󰲋 Projects"
-"~/Code"          = "󰨞 Code"
-"~/dotfiles"      = " dotfiles"
-
-# Windows specific paths
-"C:/Users"        = " "
-"C:/Program Files"= "󰍛 "
-
-# Linux specific paths
-"/etc"            = " "
-"/var"            = "󰋊 "
-"/usr/local"      = "󰏖 "
+"~/Documents" = " Documents"
+"~/Downloads" = " Downloads"
+"~/Pictures"  = " Pictures"
+"~/Projects"  = " Projects"
+"~/Code"      = " Code"
+"~/dotfiles"  = " dotfiles"
 
 # --- Git ---
 [git_branch]
-symbol = ""
+symbol = ""
 style  = "bold purple"
 format = "([$symbol$branch]($style) )"
 
@@ -65,30 +52,28 @@ format = "([$symbol$branch]($style) )"
 format = ' [\($state( $progress_current of $progress_total)\)](bold yellow) '
 
 [git_status]
-conflicted = "󰞇 "
-ahead = "⇡${count}"
-behind = "⇣${count}"
-diverged = "⇕${count}"
+conflicted = " "
+ahead = "${count}"
+behind = "${count}"
+diverged = "${count}"
 staged = "+${count}"
 modified = "~${count}"
 untracked = "?${count}"
-stashed = "●"
-renamed = "»"
-deleted = "✘${count}"
+stashed = ""
+renamed = ""
+deleted = "${count}"
 style = "bold red"
 format = '([$all_status$ahead_behind]($style) )'
 
-# --- Shell indicator (shows current shell) ---
+# --- Shell indicator ---
+# zsh shows nothing (it's the default), other shells show their name
 [shell]
 disabled = false
 format = "[$indicator]($style) "
 style = "bold blue"
 bash_indicator = "bsh"
+zsh_indicator = ""
 fish_indicator = "fsh"
-zsh_indicator = ""  # Empty for zsh since it's default
-powershell_indicator = "psh"
-pwsh_indicator = "pwsh"
-cmd_indicator = "cmd"
 nu_indicator = "nu"
 unknown_indicator = "?"
 
@@ -110,7 +95,7 @@ style = "bold green"
 # --- Kubernetes ---
 [kubernetes]
 disabled = false
-format = '[(⎈ $context:$namespace)]($style) '
+format = '[( $context:$namespace)]($style) '
 contexts = [
   { context_pattern = ".*prod.*", style = "bold red" },
   { context_pattern = ".*stg.*",  style = "bold yellow" },
@@ -122,6 +107,7 @@ detect_env_vars = []
 [aws]
 format = '[( $profile)](bold yellow) '
 force_display = false
+
 [aws.region_aliases]
 us-east-1 = "use1"
 us-west-2 = "usw2"
@@ -160,24 +146,17 @@ detect_files = ["docker-compose.yml", "docker-compose.yaml", "Dockerfile"]
 
 # --- Terraform ---
 [terraform]
-format = '[(󱑂 $workspace)]($style) '
+format = '[( $workspace)]($style) '
 style = "bold magenta"
 
-# --- Package (generic project version) ---
+# --- Package ---
 [package]
 display_private = true
 version_format = "v${raw}"
-format = '[(󰏗 $version)]($style) '
+format = '[( $version)]($style) '
 style = "bold blue"
 
-# --- Memory Usage (useful for resource monitoring) ---
-[memory_usage]
-disabled = true  # Enable on systems where you want to monitor memory
-threshold = 75
-format = "[ ${ram_pct}]($style) "
-style = "bold red"
-
-# --- Battery (useful for laptops) ---
+# --- Battery ---
 [battery]
 disabled = false
 format = "[$symbol$percentage]($style) "
@@ -185,121 +164,62 @@ format = "[$symbol$percentage]($style) "
 [[battery.display]]
 threshold = 30
 style = "bold red"
-charging_symbol = "󰂄 "
-discharging_symbol = "󰁾 "
+charging_symbol = " "
+discharging_symbol = " "
 
 [[battery.display]]
 threshold = 80
 style = "bold yellow"
-charging_symbol = "󰂄 "
-discharging_symbol = "󰂀 "
+charging_symbol = " "
+discharging_symbol = " "
 
 [[battery.display]]
 threshold = 100
 style = "bold green"
-charging_symbol = "󰂄 "
-discharging_symbol = "󰁹 "
+charging_symbol = " "
+discharging_symbol = " "
 
-# --- Right prompt modules ---
+# --- Command duration ---
 [cmd_duration]
 min_time = 1500
-format = " [⏱ $duration]($style) "
+format = " [ $duration]($style) "
 style = "bold green"
 show_milliseconds = false
-show_notifications = false
 
+# --- Time ---
 [time]
 disabled = false
 time_format = "%H:%M"
 format = " [ $time]($style) "
 style = "bold white"
-# Use different time formats based on preference
-# time_format = "%I:%M %p"  # 12-hour format
-# time_format = "%H:%M:%S"  # Include seconds
 
-# --- Jobs indicator ---
+# --- Jobs ---
 [jobs]
 format = "[$symbol$number]($style) "
 style = "bold blue"
-symbol = "✦ "
+symbol = " "
 threshold = 1
 
-# --- Status (exit code) ---
-[status]
-disabled = true  # We use character module for this
-format = "[$symbol$status]($style) "
-style = "bold red"
-symbol = "✖ "
-
-# --- Prompt glyphs ---
+# --- Prompt character ---
 [character]
-success_symbol = "[❯](bold green) "
-error_symbol   = "[❯](bold red) "
-vicmd_symbol   = "[❮](bold yellow) "
+success_symbol = "[](bold green) "
+error_symbol = "[](bold red) "
+vicmd_symbol = "[](bold yellow) "
 
-# --- Environment Detection Custom Modules ---
-
-# Windows-specific indicator (shows Windows version)
-[custom.windows_ver]
-command = "cmd /c ver 2>/dev/null | grep -oE '[0-9]+\\.[0-9]+' | head -1"
-when = '[[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]] || [[ -n "$WINDIR" ]]'
-format = "[  $output]($style) "
-style = "bold blue"
-disabled = true  # Enable if you want to see Windows version
-
-# Linux distro indicator
-[custom.distro]
-command = "lsb_release -si 2>/dev/null || cat /etc/os-release 2>/dev/null | grep '^ID=' | cut -d= -f2"
-when = '[[ "$OSTYPE" == "linux-gnu"* ]]'
-format = "[  $output]($style) "
-style = "bold yellow"
-disabled = true  # Enable if you want to see distro name
-
-# macOS version indicator
-[custom.macos_ver]
-command = "sw_vers -productVersion 2>/dev/null"
-when = '[[ "$OSTYPE" == "darwin"* ]]'
-format = "[  $output]($style) "
-style = "bold white"
-disabled = true  # Enable if you want to see macOS version
-
-# WSL indicator
-[custom.wsl]
-command = "echo WSL"
-when = '[[ -n "$WSL_DISTRO_NAME" ]]'
-format = "[  $output]($style) "
-style = "bold magenta"
-disabled = false
-
-# Container indicator
+# --- Container ---
 [container]
 format = '[[ $symbol $name ]]($style) '
 style = "bold red dimmed"
-symbol = "⬢"
+symbol = ""
 
-# --- Conda environment ---
+# --- Conda ---
 [conda]
 format = '[( $environment)]($style) '
 style = "bold green"
 ignore_base = true
 
-# --- Local IP (useful for servers) ---
-[localip]
-disabled = true  # Enable on servers
-ssh_only = true
-format = "[ $localipv4]($style) "
-style = "bold yellow"
-
-# --- Sudo indicator ---
+# --- Sudo ---
 [sudo]
 disabled = false
 format = "[ ]($style) "
 style = "bold red"
-
-# --- Shlvl (shell level indicator) ---
-[shlvl]
-disabled = true  # Enable if you use nested shells often
-threshold = 2
-format = "[ $shlvl]($style) "
-style = "bold yellow"
-symbol = "↕"

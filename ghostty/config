@@ -1,0 +1,69 @@
+# Ghostty terminal configuration
+# Aligned with WezTerm config for consistency
+
+theme = catppuccin-frappe
+
+# --- Font --------------------------------------------------
+font-family = "JetBrainsMono Nerd Font"
+font-size = 14.5
+
+# --- Background translucency ------------------------------
+background-opacity = 0.88
+background-blur = 24
+
+# --- Window aesthetics ------------------------------------
+window-padding-x = 10
+window-padding-y = 12
+cursor-style = bar
+mouse-hide-while-typing = true
+
+# --- Scrollback -------------------------------------------
+scrollback-limit = 50000
+
+# --- Tab bar ----------------------------------------------
+gtk-single-instance = true
+window-save-state = always
+
+# --- Bell -------------------------------------------------
+bell = none
+
+# --- macOS-specific (ignored elsewhere) -------------------
+macos-titlebar-style = transparent
+macos-window-shadow = false
+macos-option-as-alt = true
+
+# --- Keybinds ---------------------------------------------
+# Shift+Enter for literal newline
+keybind = shift+enter=text:\n
+
+# Clear scrollback
+keybind = super+k=clear_screen
+
+# --- Leader key (Ctrl+Space) - matches WezTerm/tmux -------
+# Splits
+keybind = ctrl+space>|=new_split:right
+keybind = ctrl+space>-=new_split:down
+
+# Navigate splits (vim-style)
+keybind = ctrl+space>h=goto_split:left
+keybind = ctrl+space>j=goto_split:bottom
+keybind = ctrl+space>k=goto_split:top
+keybind = ctrl+space>l=goto_split:right
+
+# Tabs
+keybind = ctrl+space>c=new_tab
+keybind = ctrl+space>n=next_tab
+keybind = ctrl+space>p=previous_tab
+keybind = ctrl+space>1=goto_tab:1
+keybind = ctrl+space>2=goto_tab:2
+keybind = ctrl+space>3=goto_tab:3
+keybind = ctrl+space>4=goto_tab:4
+keybind = ctrl+space>5=goto_tab:5
+
+# Pane/split management
+keybind = ctrl+space>x=close_surface
+keybind = ctrl+space>z=toggle_split_zoom
+
+# Copy mode
+keybind = ctrl+space>[=copy_to_clipboard
+keybind = ctrl+space>]=paste_from_clipboard

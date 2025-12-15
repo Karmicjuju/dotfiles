@@ -177,6 +177,9 @@ install_ubuntu() {
   sudo apt update
   sudo apt install -y neovim
 
+  # Install Starship
+  install_starship
+
   # Install eza
   install_eza_debian
 
@@ -235,8 +238,8 @@ install_starship() {
     curl -sS https://starship.rs/install.sh | sh -s -- -y
   fi
 }
-# Function to install Neovim for Debian (using AppImage for latest version)
-# Install Neovim for Debian (using AppImage for latest version)
+
+# Install Neovim for Debian (using AppImage)
 install_neovim_debian() {
   log_info "Installing Neovim (latest)..."
 
@@ -319,10 +322,17 @@ setup_dotfiles() {
   cd "$DOTFILES_DIR"
 
   # Symlink common dotfiles
+
   # Zsh config
   if [ -f "$DOTFILES_DIR/zsh/.zshrc" ]; then
     ln -sf "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc"
     log_info "Linked .zshrc"
+  fi
+
+  # Bash config (fallback shell)
+  if [ -f "$DOTFILES_DIR/bash/.bashrc" ]; then
+    ln -sf "$DOTFILES_DIR/bash/.bashrc" "$HOME/.bashrc"
+    log_info "Linked .bashrc"
   fi
 
   # Starship config
@@ -331,14 +341,47 @@ setup_dotfiles() {
     log_info "Linked starship.toml"
   fi
 
-  # Example linking commands - adjust based on your dotfiles structure
-  # ln -sf "$DOTFILES_DIR/.config/nvim" "$HOME/.config/"
-  # Add more symlinks as needed
+  # Neovim config
+  if [ -d "$DOTFILES_DIR/nvim" ]; then
+    ln -sf "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
+    log_info "Linked nvim config"
+  fi
 
-  log_warning "Please manually link any remaining dotfiles or run your dotfiles install script"
+  # WezTerm config
+  if [ -d "$DOTFILES_DIR/wezterm" ]; then
+    mkdir -p "$HOME/.config/wezterm"
+    ln -sf "$DOTFILES_DIR/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
+    log_info "Linked wezterm config"
+  fi
+
+  # GitHub CLI config
+  if [ -d "$DOTFILES_DIR/gh" ]; then
+    mkdir -p "$HOME/.config/gh"
+    ln -sf "$DOTFILES_DIR/gh/config.yml" "$HOME/.config/gh/config.yml"
+    log_info "Linked gh config"
+  fi
+
+  # Ghostty config
+  if [ -d "$DOTFILES_DIR/ghostty" ]; then
+    mkdir -p "$HOME/.config/ghostty"
+    ln -sf "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config"
+    log_info "Linked ghostty config"
+  fi
+
+  # Git config
+  if [ -f "$DOTFILES_DIR/git/.gitconfig" ]; then
+    ln -sf "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
+    log_info "Linked .gitconfig"
+    if [ ! -f "$HOME/.gitconfig.local" ]; then
+      log_warning "Create ~/.gitconfig.local with your name and email:"
+      log_warning "  [user]"
+      log_warning "      name = Your Name"
+      log_warning "      email = your@email.com"
+    fi
+  fi
 }
 
-# Function to configure the default shell and its settings
+# Function to configure the default shell
 configure_shell() {
   log_info "Configuring shell..."
 
@@ -347,48 +390,6 @@ configure_shell() {
     log_info "Setting zsh as default shell..."
     chsh -s "$(which zsh)"
     log_warning "Shell changed to zsh. Please logout and login for changes to take effect."
-  fi
-
-  # Check if .zshrc exists or is already symlinked from dotfiles
-  if [ ! -e "$HOME/.zshrc" ]; then
-    # Only create a basic .zshrc if the dotfiles version doesn't exist
-    if [ ! -f "$DOTFILES_DIR/zsh/.zshrc" ]; then
-      log_info "Creating basic .zshrc (no dotfiles version found)..."
-      cat >"$HOME/.zshrc" <<'EOF'
-# Initialize Starship prompt
-eval "$(starship init zsh)"
-
-# Initialize zoxide
-eval "$(zoxide init zsh)"
-
-# FZF key bindings
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# User configuration
-# Add your custom configuration here
-EOF
-    else
-      log_info ".zshrc will be linked from dotfiles"
-    fi
-  else
-    # Check if we need to add Starship init (only if not using dotfiles version)
-    if [ ! -L "$HOME/.zshrc" ] && [ -f "$HOME/.zshrc" ]; then
-      if ! grep -q "eval \"\$(starship init zsh)\"" "$HOME/.zshrc"; then
-        log_info "Adding Starship to existing .zshrc..."
-        echo '' >>"$HOME/.zshrc"
-        echo '# Initialize Starship prompt' >>"$HOME/.zshrc"
-        echo 'eval "$(starship init zsh)"' >>"$HOME/.zshrc"
-      fi
-    fi
-  fi
-
-  # Create config directory for Starship
-  mkdir -p "$HOME/.config"
-
-  # Symlink Starship config from dotfiles (backup check)
-  if [ -f "$DOTFILES_DIR/starship/starship.toml" ] && [ ! -L "$HOME/.config/starship.toml" ]; then
-    log_info "Linking Starship configuration from dotfiles..."
-    ln -sf "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
   fi
 }
 
@@ -464,23 +465,13 @@ main() {
   log_info "================================"
   log_info ""
   log_info "Next steps:"
-  log_info "1. Link your dotfiles manually or run your dotfiles install script"
-  log_info "2. Restart your terminal or logout/login for shell changes"
-  log_info "3. Configure Neovim with your plugins and settings"
+  log_info "1. Restart your terminal or logout/login for shell changes"
+  log_info "2. Create ~/.gitconfig.local with your name and email"
+  log_info "3. Open nvim to let Mason install LSP servers (first launch takes a minute)"
   log_info ""
-  log_info "Installed tools:"
-  log_info "  - zsh (default shell)"
-  log_info "  - starship (prompt)"
-  log_info "  - nvim (latest version)"
-  log_info "  - zoxide (z command for directory jumping)"
-  log_info "  - eza (modern ls replacement)"
-  log_info "  - fzf (fuzzy finder)"
-  log_info "  - git"
-  log_info "  - python3 (latest)"
-  log_info "  - uv (fast Python package manager)"
-  log_info "  - curl"
-  log_info "  - nc (netcat)"
-  log_info "  - dig (DNS lookup)"
+  log_info "Dotfiles linked:"
+  log_info "  ~/.zshrc, ~/.bashrc, ~/.gitconfig"
+  log_info "  ~/.config/starship.toml, ~/.config/nvim, ~/.config/wezterm, ~/.config/ghostty"
 }
 
 # Run main function
