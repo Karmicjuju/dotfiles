@@ -252,7 +252,7 @@ install_neovim_debian() {
     ./nvim.appimage --appimage-extract
     sudo mv squashfs-root /opt/nvim
     sudo ln -sf /opt/nvim/AppRun /usr/local/bin/nvim
-    rm -rf nvim.appimage squashfs-root
+    rm -f nvim.appimage  # Clean up downloaded AppImage (squashfs-root was moved)
   else
     sudo mv nvim.appimage /usr/local/bin/nvim
   fi
@@ -267,7 +267,7 @@ install_eza_debian() {
     cargo install eza
   else
     # Download pre-built binary
-    local eza_version=$(curl -s https://api.github.com/repos/eza-community/eza/releases/latest | grep -Po '"tag_name": "\K[^"]*')
+    local eza_version=$(curl -s https://api.github.com/repos/eza-community/eza/releases/latest | grep -o '"tag_name": "[^"]*"' | sed 's/.*: "//;s/"//')
     local arch=$(dpkg --print-architecture)
 
     if [[ "$arch" == "amd64" ]]; then
@@ -299,8 +299,8 @@ install_uv() {
   else
     curl -LsSf https://astral.sh/uv/install.sh | sh
 
-    # Add to current session PATH
-    export PATH="$HOME/.cargo/bin:$PATH"
+    # Add to current session PATH (uv installs to ~/.local/bin since v0.5.0)
+    export PATH="$HOME/.local/bin:$PATH"
   fi
 }
 
@@ -346,7 +346,13 @@ setup_dotfiles() {
 
   # Neovim config
   if [ -d "$DOTFILES_DIR/nvim" ]; then
-    rm -rf "$HOME/.config/nvim"
+    if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
+      log_warning "Backing up existing nvim config to ~/.config/nvim.bak"
+      rm -rf "$HOME/.config/nvim.bak"
+      mv "$HOME/.config/nvim" "$HOME/.config/nvim.bak"
+    else
+      rm -rf "$HOME/.config/nvim"
+    fi
     ln -sfn "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
     log_info "Linked nvim config"
   fi
@@ -362,6 +368,7 @@ setup_dotfiles() {
   if [ -d "$DOTFILES_DIR/gh" ]; then
     mkdir -p "$HOME/.config/gh"
     ln -sf "$DOTFILES_DIR/gh/config.yml" "$HOME/.config/gh/config.yml"
+    [ -f "$DOTFILES_DIR/gh/hosts.yml" ] && ln -sf "$DOTFILES_DIR/gh/hosts.yml" "$HOME/.config/gh/hosts.yml"
     log_info "Linked gh config"
   fi
 
@@ -401,10 +408,10 @@ configure_shell() {
 post_install() {
   log_info "Running post-installation setup..."
 
-  # Initialize zoxide
+  # Initialize zoxide for this script session (user's shell init is in .zshrc/.bashrc)
   if command -v zoxide &>/dev/null; then
     log_info "Initializing zoxide..."
-    eval "$(zoxide init zsh)"
+    eval "$(zoxide init bash)"
   fi
 
   # Install fzf key bindings and fuzzy completion
