@@ -18,3 +18,5 @@ command -v zoxide &> /dev/null && eval "$(zoxide init bash)"
 
 # Load local overrides (not tracked in git)
 [[ -f ~/.bashrc.local ]] && source ~/.bashrc.local
+
+. "$HOME/.local/bin/env"

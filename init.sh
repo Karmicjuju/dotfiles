@@ -26,7 +26,14 @@ NC='\033[0m' # No Color
 
 # Configuration
 DOTFILES_REPO="https://github.com/karmicjuju/dotfiles.git" # UPDATE THIS
-DOTFILES_DIR="$HOME/dotfiles"
+
+# Detect dotfiles location: use script's directory if run from repo, else default to ~/dotfiles
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "$SCRIPT_DIR/init.sh" && -d "$SCRIPT_DIR/zsh" ]]; then
+  DOTFILES_DIR="$SCRIPT_DIR"
+else
+  DOTFILES_DIR="$HOME/dotfiles"
+fi
 
 # Logging functions
 log_info() {
@@ -88,17 +95,22 @@ install_arch() {
     curl \
     wget \
     zsh \
+    zsh-syntax-highlighting \
+    zsh-autosuggestions \
     python \
     fzf \
-    gnu-netcat \
+    openbsd-netcat \
     bind \
     starship \
     neovim-nightly-bin \
-    zoxide-bin \
-    eza-bin
+    zoxide \
+    eza
 
   # Install uv
   install_uv
+
+  # Install Claude Code
+  install_claude_code
 }
 
 # Function to install packages for Debian
@@ -117,6 +129,8 @@ install_debian() {
     curl \
     wget \
     zsh \
+    zsh-syntax-highlighting \
+    zsh-autosuggestions \
     python3 \
     python3-pip \
     python3-venv \
@@ -142,6 +156,9 @@ install_debian() {
 
   # Install uv
   install_uv
+
+  # Install Claude Code
+  install_claude_code
 }
 
 # Function to install packages for Ubuntu
@@ -160,6 +177,8 @@ install_ubuntu() {
     curl \
     wget \
     zsh \
+    zsh-syntax-highlighting \
+    zsh-autosuggestions \
     python3 \
     python3-pip \
     python3-venv \
@@ -188,6 +207,9 @@ install_ubuntu() {
 
   # Install uv
   install_uv
+
+  # Install Claude Code
+  install_claude_code
 }
 
 # Function to install packages for macOS
@@ -215,6 +237,8 @@ install_macos() {
     git \
     curl \
     zsh \
+    zsh-syntax-highlighting \
+    zsh-autosuggestions \
     neovim \
     zoxide \
     eza \
@@ -226,6 +250,9 @@ install_macos() {
 
   # Install uv
   install_uv
+
+  # Install Claude Code
+  install_claude_code
 }
 
 # Function to install Starship prompt
@@ -304,14 +331,32 @@ install_uv() {
   fi
 }
 
+# Function to install Claude Code CLI
+install_claude_code() {
+  log_info "Installing Claude Code..."
+
+  if command -v claude &>/dev/null; then
+    log_info "Claude Code is already installed"
+  else
+    curl -fsSL https://claude.ai/install.sh | bash
+
+    # Add to current session PATH (installs to ~/.local/bin)
+    export PATH="$HOME/.local/bin:$PATH"
+  fi
+}
+
 # Function to clone and set up dotfiles repository
 setup_dotfiles() {
   log_info "Setting up dotfiles..."
 
   if [ -d "$DOTFILES_DIR" ]; then
-    log_warning "Dotfiles directory already exists. Pulling latest changes..."
+    log_info "Dotfiles directory already exists at $DOTFILES_DIR"
     cd "$DOTFILES_DIR"
-    git pull
+    if git pull 2>/dev/null; then
+      log_info "Pulled latest changes"
+    else
+      log_warning "Could not pull latest changes (no network or SSH keys not configured). Continuing with local copy..."
+    fi
   else
     log_info "Cloning dotfiles repository..."
     git clone "$DOTFILES_REPO" "$DOTFILES_DIR"
@@ -414,15 +459,7 @@ post_install() {
     eval "$(zoxide init bash)"
   fi
 
-  # Install fzf key bindings and fuzzy completion
-  if command -v fzf &>/dev/null; then
-    log_info "Setting up fzf..."
-    if [ -f /usr/share/fzf/key-bindings.zsh ]; then
-      source /usr/share/fzf/key-bindings.zsh
-    elif [ -f "$HOME/.fzf.zsh" ]; then
-      source "$HOME/.fzf.zsh"
-    fi
-  fi
+  # fzf key bindings are configured in .zshrc/.bashrc, not needed here
 
   # Create common directories
   mkdir -p "$HOME/.config"
@@ -439,6 +476,7 @@ main() {
   # Detect OS
   OS=$(detect_os)
   log_info "Detected OS: $OS"
+  log_info "Dotfiles directory: $DOTFILES_DIR"
 
   # Check if running with proper permissions
   if [ "$OS" != "macos" ] && [ "$EUID" -eq 0 ]; then

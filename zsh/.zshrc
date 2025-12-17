@@ -31,8 +31,16 @@ command -v zoxide &> /dev/null && eval "$(zoxide init zsh)"
 [[ -f /usr/share/fzf/key-bindings.zsh ]] && source /usr/share/fzf/key-bindings.zsh
 [[ -f /usr/share/fzf/completion.zsh ]] && source /usr/share/fzf/completion.zsh
 
-# Zsh-specific: Project-aware tab/window titles
+# Zsh-specific: Project-aware tab/window titles + sudo indicator
+_SUDO_ACTIVE=0
+
 function _title_precmd() {
+  # Reset background if sudo was active
+  if [[ $_SUDO_ACTIVE -eq 1 ]]; then
+    printf '\e]111\a'  # Reset background to terminal default (theme-aware)
+    _SUDO_ACTIVE=0
+  fi
+
   local repo
   repo="$(git rev-parse --show-toplevel 2>/dev/null)"
   if [[ -n "$repo" ]]; then
@@ -44,6 +52,12 @@ function _title_precmd() {
 }
 
 function _title_preexec() {
+  # Detect privileged commands and tint background red
+  if [[ "$1" =~ ^(sudo|doas|pkexec) ]]; then
+    printf '\e]11;#442a2a\a'  # Dark red tint
+    _SUDO_ACTIVE=1
+  fi
+
   print -Pn "\e]0;$1\a"
 }
 
@@ -53,3 +67,5 @@ add-zsh-hook preexec _title_preexec
 
 # Load local overrides (not tracked in git)
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+. "$HOME/.local/bin/env"

@@ -10,12 +10,15 @@ alias nv=nvim
 # Claude Code
 alias ccyolo='claude --dangerously-skip-permissions'
 
-# Modern replacements (if available)
+# Directory listing aliases (eza if available, fallback to ls)
 if command -v eza &> /dev/null; then
   alias ls='eza'
   alias ll='eza -la'
   alias la='eza -a'
   alias lt='eza --tree'
+else
+  alias ll='ls -lah'
+  alias la='ls -A'
 fi
 
 # Git shortcuts
