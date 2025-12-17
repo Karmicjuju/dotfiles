@@ -1,7 +1,7 @@
 # Ghostty terminal configuration
 # Aligned with WezTerm config for consistency
 
-theme = catppuccin-frappe
+theme = Catppuccin Frappe
 
 # --- Font --------------------------------------------------
 font-family = "JetBrainsMono Nerd Font"
@@ -25,7 +25,8 @@ gtk-single-instance = true
 window-save-state = always
 
 # --- Bell -------------------------------------------------
-bell = none
+# Disable all bell notifications (title emoji, dock bounce, etc.)
+bell-features = no-title,no-attention
 
 # --- macOS-specific (ignored elsewhere) -------------------
 macos-titlebar-style = transparent
