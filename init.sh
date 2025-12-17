@@ -35,6 +35,10 @@ else
   DOTFILES_DIR="$HOME/dotfiles"
 fi
 
+# Persist DOTFILES_DIR for shell configs to source
+mkdir -p "$HOME/.config"
+echo "$DOTFILES_DIR" > "$HOME/.config/dotfiles-dir"
+
 # Logging functions
 log_info() {
   echo -e "${GREEN}[INFO]${NC} $1"

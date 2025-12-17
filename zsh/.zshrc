@@ -1,6 +1,9 @@
 # Zsh configuration
 
-# Determine dotfiles location
+# Determine dotfiles location (read from init.sh-generated config, fallback to ~/dotfiles)
+if [[ -z "$DOTFILES_DIR" && -f "$HOME/.config/dotfiles-dir" ]]; then
+  DOTFILES_DIR="$(< "$HOME/.config/dotfiles-dir")"
+fi
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 
 # History configuration
