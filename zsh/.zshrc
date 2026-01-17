@@ -23,6 +23,8 @@ setopt share_history hist_expire_dups_first hist_ignore_dups hist_verify
 [[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 [[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+eval $(gnome-keyring-daemon --start --components=secrets)
+
 # Initialize tools
 command -v starship &> /dev/null && eval "$(starship init zsh)"
 command -v zoxide &> /dev/null && eval "$(zoxide init zsh)"
