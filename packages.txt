@@ -1,0 +1,12 @@
+git
+curl
+stow
+zsh
+zsh-syntax-highlighting
+zsh-autosuggestions
+neovim
+zoxide
+eza
+fzf
+python3
+zellij
