@@ -29,7 +29,7 @@ for p in \
   "$HOME/.config/ghostty/config" \
   "$HOME/.config/zed/settings.json" \
   "$HOME/.config/zellij/config.kdl" \
-  "$HOME/.gemini/settings.json"; do
+  "$HOME/.gemini/GEMINI.md"; do
   check "$p"
 done
 echo "--- secret check ---"
