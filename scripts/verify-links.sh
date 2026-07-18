@@ -29,7 +29,6 @@ for p in \
   "$HOME/.config/ghostty/config" \
   "$HOME/.config/zed/settings.json" \
   "$HOME/.config/zellij/config.kdl" \
-  "$HOME/.config/codex/config.toml" \
   "$HOME/.gemini/settings.json"; do
   check "$p"
 done

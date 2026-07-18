@@ -7,7 +7,7 @@ DOTFILES_DIR="$SCRIPT_DIR"
 mkdir -p "$HOME/.config"
 echo "$DOTFILES_DIR" > "$HOME/.config/dotfiles-dir"
 
-PACKAGES=(zsh bash git starship nvim wezterm gh ghostty zed zellij codex gemini)
+PACKAGES=(zsh bash git starship nvim wezterm gh ghostty zed zellij gemini)
 
 detect_os() {
   if [[ "$OSTYPE" == "darwin"* ]]; then echo macos
