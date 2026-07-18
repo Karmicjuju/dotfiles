@@ -3,9 +3,12 @@
 set -u
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 fail=0
+REPO_NAME="$(basename "$DOTFILES_DIR")"
 check() {
   local p="$1"
-  if [ -L "$p" ] && readlink "$p" | grep -q "dotfiles"; then
+  # stow makes relative symlinks (e.g. ../../dotfiles/...), so match the repo
+  # dir name rather than an absolute path or a bare "dotfiles" literal.
+  if [ -L "$p" ] && readlink "$p" | grep -q "/$REPO_NAME/"; then
     echo "OK   $p"
   else
     echo "FAIL $p -> $(readlink "$p" 2>/dev/null || echo MISSING)"; fail=1
@@ -33,4 +36,5 @@ cd "$DOTFILES_DIR" || exit 2
 for s in auth.json oauth_creds.json google_accounts.json; do
   if git ls-files | grep -q "$s"; then echo "FAIL secret tracked: $s"; fail=1; else echo "OK   not tracked: $s"; fi
 done
+if git ls-files | grep -qE '\.local$'; then echo "FAIL secret tracked: *.local"; fail=1; else echo "OK   not tracked: *.local"; fi
 exit $fail
