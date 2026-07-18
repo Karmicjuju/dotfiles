@@ -6,9 +6,11 @@ fail=0
 REPO_NAME="$(basename "$DOTFILES_DIR")"
 check() {
   local p="$1"
-  # stow makes relative symlinks (e.g. ../../dotfiles/...), so match the repo
-  # dir name rather than an absolute path or a bare "dotfiles" literal.
-  if [ -L "$p" ] && readlink "$p" | grep -q "/$REPO_NAME/"; then
+  # stow makes relative symlinks (e.g. ../../dotfiles/... for nested targets,
+  # or a bare "dotfiles/..." with no "../" when the link sits directly in
+  # $HOME alongside the repo, e.g. ~/.zshenv, ~/.bashrc). Match the repo dir
+  # name at the start of the target or preceded by "/", not just "/name/".
+  if [ -L "$p" ] && readlink "$p" | grep -Eq "(^|/)$REPO_NAME/"; then
     echo "OK   $p"
   else
     echo "FAIL $p -> $(readlink "$p" 2>/dev/null || echo MISSING)"; fail=1
