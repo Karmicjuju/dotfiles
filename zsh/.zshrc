@@ -70,7 +70,14 @@ autoload -Uz add-zsh-hook
 add-zsh-hook precmd  _title_precmd
 add-zsh-hook preexec _title_preexec
 
+# Inside zellij, `exit` should close the tab/session so plugin panes
+# (Zellaude / status-bar) don't strand an empty tab after the shell quits.
+if [[ -n $ZELLIJ ]]; then
+  exit() {
+    zellij action close-tab
+  }
+fi
+
 # Load local overrides (not tracked in git)
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
-
 . "$HOME/.local/bin/env"
