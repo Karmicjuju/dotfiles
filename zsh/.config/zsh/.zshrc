@@ -6,8 +6,7 @@ if [[ -z "$DOTFILES_DIR" && -f "$HOME/.config/dotfiles-dir" ]]; then
 fi
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 
-# History configuration
-HISTFILE="$ZDOTDIR/.zsh_history"
+# History configuration (HISTFILE lives in .zshenv so non-interactive zsh uses it too)
 HISTSIZE=10000
 SAVEHIST=10000
 setopt share_history hist_expire_dups_first hist_ignore_dups hist_verify

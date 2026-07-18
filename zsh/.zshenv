@@ -1,6 +1,10 @@
 # Bootstrap: relocate the rest of zsh's dotfiles under ~/.config/zsh (XDG).
 export ZDOTDIR="$HOME/.config/zsh"
 
+# HISTFILE here (not .zshrc) so every zsh — incl. non-interactive — uses the
+# XDG path instead of the default ~/.zsh_history.
+export HISTFILE="$ZDOTDIR/.zsh_history"
+
 # Codex CLI: keep all its state under ~/.config (see dotfiles reorg spec).
 export CODEX_HOME="$HOME/.config/codex"
 
