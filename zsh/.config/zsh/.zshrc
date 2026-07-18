@@ -7,7 +7,7 @@ fi
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 
 # History configuration
-HISTFILE="$HOME/.zsh_history"
+HISTFILE="$ZDOTDIR/.zsh_history"
 HISTSIZE=10000
 SAVEHIST=10000
 setopt share_history hist_expire_dups_first hist_ignore_dups hist_verify
@@ -79,5 +79,5 @@ if [[ -n $ZELLIJ ]]; then
 fi
 
 # Load local overrides (not tracked in git)
-[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+[[ -f "$ZDOTDIR/.zshrc.local" ]] && source "$ZDOTDIR/.zshrc.local"
 . "$HOME/.local/bin/env"

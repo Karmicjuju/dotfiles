@@ -2,7 +2,7 @@
 # Machine-specific settings (name, email, signing) go in ~/.gitconfig.local
 
 [include]
-    path = ~/.gitconfig.local
+    path = ~/.config/git/config.local
 
 [core]
     editor = nvim
