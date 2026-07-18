@@ -20,7 +20,7 @@ config.font = wezterm.font_with_fallback({
 config.font_size = is_macos() and 14.5 or 11.0
 
 -- Color scheme
-config.color_scheme = 'Catppuccin Frappe'
+config.color_scheme = 'GruvboxDark'
 config.bold_brightens_ansi_colors = true
 
 -- Transparency and blur
