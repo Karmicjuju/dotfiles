@@ -56,7 +56,7 @@ config.scrollback_lines = 50000
 config.selection_word_boundary = ' \t\n{}[]()"\',;:'
 
 -- Tab bar
-config.window_decorations = "RESIZE"
+config.window_decorations = "TITLE | RESIZE"
 config.use_fancy_tab_bar = true
 config.tab_bar_at_bottom = false
 config.hide_tab_bar_if_only_one_tab = true
@@ -157,5 +157,11 @@ config.audible_bell = 'Disabled'
 config.max_fps = 120
 config.animation_fps = 60
 config.enable_kitty_graphics = true
+
+-- Cursor
+config.default_cursor_style = "BlinkingBar"
+config.cursor_blink_rate = 500
+config.cursor_blink_ease_in = "Constant"
+config.cursor_blink_ease_out = "Constant"
 
 return config
