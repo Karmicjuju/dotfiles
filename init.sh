@@ -24,16 +24,29 @@ install_macos() {
 }
 
 install_linux() {
-  local mgr=$1
-  mapfile -t pkgs < "$DOTFILES_DIR/packages.txt"
+  local mgr=$1 pkg
+  pm_install() {  # install one package; warn instead of aborting the batch
+    if [ "$mgr" = pacman ]; then
+      sudo pacman -S --needed --noconfirm "$1" || echo "WARN: could not install $1"
+    else
+      sudo apt install -y "$1" || echo "WARN: could not install $1"
+    fi
+  }
+  if [ "$mgr" = pacman ]; then sudo pacman -Syu --noconfirm || true; else sudo apt update || true; fi
+  # One package at a time: a single unresolved name (e.g. python3 on Arch) must
+  # not void the whole install, and failures should warn, not silently vanish.
+  while IFS= read -r pkg; do
+    [ -z "$pkg" ] && continue
+    [ "$mgr" = pacman ] && [ "$pkg" = python3 ] && pkg=python   # Arch names it 'python'
+    pm_install "$pkg"
+  done < "$DOTFILES_DIR/packages.txt"
   if [ "$mgr" = pacman ]; then
-    sudo pacman -Syu --needed --noconfirm "${pkgs[@]}" openbsd-netcat bind starship || true
+    pm_install openbsd-netcat; pm_install bind; pm_install starship
   else
-    sudo apt update
-    sudo apt install -y "${pkgs[@]}" netcat-openbsd dnsutils || true
-    command -v starship >/dev/null || curl -sS https://starship.rs/install.sh | sh -s -- -y
+    pm_install netcat-openbsd; pm_install dnsutils
   fi
-  command -v stow >/dev/null || { [ "$mgr" = pacman ] && sudo pacman -S --noconfirm stow || sudo apt install -y stow; }
+  command -v starship >/dev/null || curl -sS https://starship.rs/install.sh | sh -s -- -y
+  command -v stow >/dev/null || pm_install stow
 }
 
 os=$(detect_os)
@@ -45,7 +58,8 @@ case "$os" in
   *) echo "Unsupported OS"; exit 1 ;;
 esac
 
-# ponytail: Linux package names are best-effort; starship/eza fall back to curl/cargo per distro.
+# ponytail: Linux path installs each package independently and warns on failures;
+# names are best-effort across apt/pacman. starship falls back to curl if absent.
 
 command -v stow >/dev/null || { echo "stow missing"; exit 1; }
 stow --no-folding --target="$HOME" --dir="$DOTFILES_DIR" "${PACKAGES[@]}"
