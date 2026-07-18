@@ -1,5 +1,5 @@
 # Git configuration
-# Machine-specific settings (name, email, signing) go in ~/.gitconfig.local
+# Machine-specific settings (name, email, signing) go in ~/.config/git/config.local
 
 [include]
     path = ~/.config/git/config.local

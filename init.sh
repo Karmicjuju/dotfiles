@@ -20,7 +20,7 @@ install_macos() {
   command -v brew >/dev/null || /bin/bash -c \
     "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   [ -x /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
-  brew bundle --file="$DOTFILES_DIR/Brewfile"
+  brew bundle --file="$DOTFILES_DIR/Brewfile" || echo "WARN: some brew packages failed — continuing to stow"
 }
 
 install_linux() {
