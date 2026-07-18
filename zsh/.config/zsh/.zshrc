@@ -23,7 +23,7 @@ setopt share_history hist_expire_dups_first hist_ignore_dups hist_verify
 [[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 [[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-eval $(gnome-keyring-daemon --start --components=secrets)
+command -v gnome-keyring-daemon >/dev/null && eval "$(gnome-keyring-daemon --start --components=secrets)"
 
 # Initialize tools
 command -v starship &> /dev/null && eval "$(starship init zsh)"
@@ -80,4 +80,4 @@ fi
 
 # Load local overrides (not tracked in git)
 [[ -f "$ZDOTDIR/.zshrc.local" ]] && source "$ZDOTDIR/.zshrc.local"
-. "$HOME/.local/bin/env"
+[[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
