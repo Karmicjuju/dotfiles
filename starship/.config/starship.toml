@@ -2,78 +2,92 @@
 # Requires a Nerd Font for glyphs
 
 add_newline = true
-continuation_prompt = " "
+command_timeout = 1000
+continuation_prompt = "[∙](fg:gray) "
+palette = "gruvbox_dark"
 
-format = """
-$os\
-$directory$git_branch$git_state$git_status\
-$aws$python$nodejs$terraform$package
-$line_break$character
-"""
+format = "$os$username$hostname$directory$git_branch$git_state$git_status$line_break$character"
 
-right_format = """
-$cmd_duration$time
-"""
+right_format = "$kubernetes$aws$docker_context$python$nodejs$rust$golang$terraform$package$status$cmd_duration$jobs$battery$time"
+
+[palettes.gruvbox_dark]
+dark0 = "#282828"
+dark1 = "#3c3836"
+dark2 = "#504945"
+light0 = "#fbf1c7"
+light1 = "#ebdbb2"
+gray = "#a89984"
+red = "#fb4934"
+green = "#b8bb26"
+yellow = "#fabd2f"
+blue = "#83a598"
+purple = "#d3869b"
+aqua = "#8ec07c"
+orange = "#fe8019"
 
 # --- OS Module ---
 [os]
 disabled = false
-format = "[$symbol]($style) "
-style = "bold white"
+format = "[ $symbol ]($style) "
+style = "bold fg:dark0 bg:orange"
 
 [os.symbols]
-Arch   = ""
-Ubuntu = ""
-Macos  = ""
-Linux  = ""
+Arch = "󰣇"
+Ubuntu = "󰕈"
+Macos = "󰀵"
+Linux = "󰌽"
 
 # --- Directory ---
 [directory]
 truncation_length = 3
-truncation_symbol = ".../"
-read_only = " "
-style = "bold cyan"
+truncation_symbol = "…/"
+read_only = " 󰌾"
+read_only_style = "bold fg:red bg:dark1"
+home_symbol = "~"
+format = "[ $path ]($style)[$read_only]($read_only_style) "
+style = "bold fg:light0 bg:dark1"
 
 [directory.substitutions]
-"~/Documents" = " Documents"
-"~/Downloads" = " Downloads"
-"~/Pictures"  = " Pictures"
-"~/Projects"  = " Projects"
-"~/Code"      = " Code"
-"~/dotfiles"  = " dotfiles"
+"~/Documents" = "󰈙 Documents"
+"~/Downloads" = "󰇚 Downloads"
+"~/Pictures" = "󰉏 Pictures"
+"~/Projects" = "󰲋 Projects"
+"~/Code" = "󰨞 Code"
+"~/dotfiles" = "󱁿 dotfiles"
 
 # --- Git ---
 [git_branch]
-symbol = ""
-style  = "bold purple"
-format = "([$symbol$branch]($style) )"
+symbol = " "
+style = "bold fg:purple bg:dark1"
+format = "[ $symbol$branch ]($style) "
 
 [git_state]
-format = ' [\($state( $progress_current of $progress_total)\)](bold yellow) '
+style = "bold fg:yellow bg:dark1"
+format = '[ $state( $progress_current/$progress_total) ]($style) '
 
 [git_status]
-conflicted = " "
-ahead = "${count}"
-behind = "${count}"
-diverged = "${count}"
+conflicted = "=${count}"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
 staged = "+${count}"
-modified = "~${count}"
+modified = "!${count}"
 untracked = "?${count}"
-stashed = ""
-renamed = ""
-deleted = "${count}"
-style = "bold red"
-format = '([$all_status$ahead_behind]($style) )'
+stashed = "$${count}"
+renamed = "»${count}"
+deleted = "x${count}"
+style = "bold fg:red bg:dark1"
+format = '([ $all_status$ahead_behind ]($style) )'
 
 # --- Shell indicator ---
 # zsh shows nothing (it's the default), other shells show their name
 [shell]
 disabled = false
-format = "[$indicator]($style) "
-style = "bold blue"
-bash_indicator = "bsh"
+format = "[ $indicator ]($style) "
+style = "bold fg:blue bg:dark1"
+bash_indicator = "bash"
 zsh_indicator = ""
-fish_indicator = "fsh"
+fish_indicator = "fish"
 nu_indicator = "nu"
 unknown_indicator = "?"
 
@@ -81,31 +95,32 @@ unknown_indicator = "?"
 [username]
 disabled = false
 show_always = false
-format = "[$user]($style) "
-style_user = "bold yellow"
-style_root = "bold red"
+format = "[ $user ]($style) "
+style_user = "bold fg:yellow bg:dark1"
+style_root = "bold fg:red bg:dark1"
 
 # --- Hostname (shown over SSH or in containers) ---
 [hostname]
 disabled = false
 ssh_only = true
-format = "[@$hostname]($style) "
-style = "bold green"
+format = "[ @$hostname ]($style) "
+style = "bold fg:green bg:dark1"
 
 # --- Kubernetes ---
 [kubernetes]
 disabled = false
-format = '[( $context:$namespace)]($style) '
+format = '[ 󱃾 $context(:$namespace) ]($style) '
 contexts = [
-  { context_pattern = ".*prod.*", style = "bold red" },
-  { context_pattern = ".*stg.*",  style = "bold yellow" },
-  { context_pattern = ".*",       style = "bold blue" }
+  { context_pattern = ".*prod.*", style = "bold fg:red bg:dark1" },
+  { context_pattern = ".*stg.*", style = "bold fg:yellow bg:dark1" },
+  { context_pattern = ".*", style = "bold fg:blue bg:dark1" }
 ]
 detect_env_vars = []
 
 # --- AWS ---
 [aws]
-format = '[( $profile)](bold yellow) '
+format = '[ 󰸏( $profile)( $region) ]($style) '
+style = "bold fg:yellow bg:dark1"
 force_display = false
 
 [aws.region_aliases]
@@ -115,111 +130,122 @@ eu-west-1 = "euw1"
 
 # --- Python ---
 [python]
-format = '[( $virtualenv )(\($version\))]($style) '
-style = "bold green"
+format = '[  $virtualenv( $version) ]($style) '
+style = "bold fg:green bg:dark1"
 pyenv_version_name = true
 detect_extensions = ["py", "ipynb"]
 detect_files = ["pyproject.toml", "requirements.txt", "Pipfile", "poetry.lock"]
 
 # --- Node / JS ---
 [nodejs]
-format = '[( $version)]($style) '
-style = "bold green"
+format = '[  $version ]($style) '
+style = "bold fg:green bg:dark1"
 detect_files = ["package.json", "pnpm-lock.yaml", "yarn.lock", "bun.lockb"]
 
 # --- Rust ---
 [rust]
-format = '[( $version)]($style) '
-style = "bold red"
+format = '[  $version ]($style) '
+style = "bold fg:orange bg:dark1"
 
 # --- Go ---
 [golang]
-format = '[( $version)]($style) '
-style = "bold cyan"
+format = '[  $version ]($style) '
+style = "bold fg:aqua bg:dark1"
 
 # --- Docker ---
 [docker_context]
-format = '[( $context)]($style) '
-style = "bold blue"
+format = '[  $context ]($style) '
+style = "bold fg:blue bg:dark1"
 only_with_files = true
 detect_files = ["docker-compose.yml", "docker-compose.yaml", "Dockerfile"]
 
 # --- Terraform ---
 [terraform]
-format = '[( $workspace)]($style) '
-style = "bold magenta"
+format = '[ 󱁢 $workspace ]($style) '
+style = "bold fg:purple bg:dark1"
 
 # --- Package ---
 [package]
 display_private = true
 version_format = "v${raw}"
-format = '[( $version)]($style) '
-style = "bold blue"
+format = '[ 󰏗 $version ]($style) '
+style = "bold fg:aqua bg:dark1"
 
 # --- Battery ---
 [battery]
 disabled = false
-format = "[$symbol$percentage]($style) "
+full_symbol = "󰁹 "
+charging_symbol = "󰂄 "
+discharging_symbol = "󰂃 "
+unknown_symbol = "󰂑 "
+empty_symbol = "󰂎 "
+format = "[ $symbol$percentage ]($style) "
 
 [[battery.display]]
-threshold = 30
-style = "bold red"
-charging_symbol = " "
-discharging_symbol = " "
+threshold = 20
+style = "bold fg:red bg:dark1"
 
 [[battery.display]]
-threshold = 80
-style = "bold yellow"
-charging_symbol = " "
-discharging_symbol = " "
+threshold = 50
+style = "bold fg:yellow bg:dark1"
 
 [[battery.display]]
 threshold = 100
-style = "bold green"
-charging_symbol = " "
-discharging_symbol = " "
+style = "bold fg:green bg:dark1"
 
 # --- Command duration ---
 [cmd_duration]
 min_time = 1500
-format = " [ $duration]($style) "
-style = "bold green"
+format = "[ 󰔚 $duration ]($style) "
+style = "bold fg:yellow bg:dark1"
 show_milliseconds = false
 
 # --- Time ---
 [time]
 disabled = false
 time_format = "%H:%M"
-format = " [ $time]($style) "
-style = "bold white"
+format = "[  $time ]($style) "
+style = "bold fg:gray bg:dark1"
 
 # --- Jobs ---
 [jobs]
-format = "[$symbol$number]($style) "
-style = "bold blue"
-symbol = " "
+format = "[ $symbol$number ]($style) "
+style = "bold fg:blue bg:dark1"
+symbol = " "
 threshold = 1
+
+# --- Exit status ---
+[status]
+disabled = false
+map_symbol = true
+symbol = "✘ "
+not_executable_symbol = "noexec "
+not_found_symbol = "notfound "
+sigint_symbol = "int "
+signal_symbol = "sig "
+format = "[ $symbol$status ]($style) "
+style = "bold fg:red bg:dark1"
 
 # --- Prompt character ---
 [character]
-success_symbol = "[](bold green) "
-error_symbol = "[](bold red) "
-vicmd_symbol = "[](bold yellow) "
+success_symbol = "[❯](bold fg:green) "
+error_symbol = "[❯](bold fg:red) "
+vicmd_symbol = "[❮](bold fg:yellow) "
 
 # --- Container ---
 [container]
-format = '[[ $symbol $name ]]($style) '
-style = "bold red dimmed"
-symbol = ""
+format = '[ $symbol $name ]($style) '
+style = "bold fg:red bg:dark1"
+symbol = "⬢"
 
 # --- Conda ---
 [conda]
-format = '[( $environment)]($style) '
-style = "bold green"
+format = '[ 󰌠 $environment ]($style) '
+style = "bold fg:green bg:dark1"
 ignore_base = true
 
 # --- Sudo ---
 [sudo]
 disabled = false
-format = "[ ]($style) "
-style = "bold red"
+format = "[ 󰌆 ]($style) "
+style = "bold fg:red bg:dark1"
