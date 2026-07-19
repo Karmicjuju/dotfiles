@@ -34,8 +34,9 @@ for p in \
 done
 echo "--- secret check ---"
 cd "$DOTFILES_DIR" || exit 2
-for s in auth.json oauth_creds.json google_accounts.json; do
+for s in auth.json oauth_creds.json google_accounts.json hosts.yml; do
   if git ls-files | grep -q "$s"; then echo "FAIL secret tracked: $s"; fail=1; else echo "OK   not tracked: $s"; fi
 done
 if git ls-files | grep -qE '\.local$'; then echo "FAIL secret tracked: *.local"; fail=1; else echo "OK   not tracked: *.local"; fi
+if git grep -qI --cached oauth_token -- ':!scripts/verify-links.sh'; then echo "FAIL oauth_token in tracked file"; fail=1; else echo "OK   no oauth_token in tracked files"; fi
 exit $fail

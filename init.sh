@@ -19,7 +19,8 @@ detect_os() {
 install_macos() {
   command -v brew >/dev/null || /bin/bash -c \
     "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  [ -x /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
+  if [ -x /opt/homebrew/bin/brew ]; then eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [ -x /usr/local/bin/brew ]; then eval "$(/usr/local/bin/brew shellenv)"; fi  # Intel Macs
   brew bundle --file="$DOTFILES_DIR/Brewfile" || echo "WARN: some brew packages failed — continuing to stow"
 }
 
@@ -45,7 +46,7 @@ install_linux() {
   else
     pm_install netcat-openbsd; pm_install dnsutils
   fi
-  command -v starship >/dev/null || curl -sS https://starship.rs/install.sh | sh -s -- -y
+  command -v starship >/dev/null || curl -sS https://starship.rs/install.sh | sh -s -- -y || echo "WARN: could not install starship"
   command -v stow >/dev/null || pm_install stow
 }
 
@@ -62,10 +63,22 @@ esac
 # names are best-effort across apt/pacman. starship falls back to curl if absent.
 
 command -v stow >/dev/null || { echo "stow missing"; exit 1; }
+
+# Fresh machines ship real files at some targets (e.g. /etc/skel's ~/.bashrc);
+# stow refuses to link over them, so move them aside first. Tracked files only,
+# and never a target that already resolves into the repo (folded stow links).
+for pkg in "${PACKAGES[@]}"; do
+  while IFS= read -r f; do
+    t="$HOME/${f#"$pkg/"}"
+    [ -e "$t" ] && [ ! -L "$t" ] && ! [ "$t" -ef "$DOTFILES_DIR/$f" ] && mv "$t" "$t.pre-stow"
+  done < <(git -C "$DOTFILES_DIR" ls-files -- "$pkg")
+done
+
 stow --no-folding --target="$HOME" --dir="$DOTFILES_DIR" "${PACKAGES[@]}"
 
 # Optional tools not cleanly in package managers
-command -v uv >/dev/null     || curl -LsSf https://astral.sh/uv/install.sh | sh
-command -v claude >/dev/null || curl -fsSL https://claude.ai/install.sh | bash
+command -v uv >/dev/null     || curl -LsSf https://astral.sh/uv/install.sh | sh || echo "WARN: could not install uv"
+command -v claude >/dev/null || curl -fsSL https://claude.ai/install.sh | bash || echo "WARN: could not install claude"
 
 echo "Done. Restart your shell (new ZDOTDIR) or run: exec zsh -l"
+echo "If zsh isn't your login shell: chsh -s \$(command -v zsh)"

@@ -4,7 +4,7 @@
 (target `$HOME`, linked with `--no-folding`).
 
 **Never tracked:** secrets (`auth.json`, `oauth_creds.json`,
-`google_accounts.json`, `*.local`), tool state/caches, large app data
+`google_accounts.json`, gh `hosts.yml`, `*.local`), tool state/caches, large app data
 directories. Machine-specific and secret values live in `*.local` files
 (`~/.config/git/config.local`, `~/.config/zsh/.zshrc.local`).
 
