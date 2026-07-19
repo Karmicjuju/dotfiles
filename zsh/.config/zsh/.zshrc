@@ -6,8 +6,7 @@ if [[ -z "$DOTFILES_DIR" && -f "$HOME/.config/dotfiles-dir" ]]; then
 fi
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 
-# History configuration
-HISTFILE="$HOME/.zsh_history"
+# History configuration (HISTFILE lives in .zshenv so non-interactive zsh uses it too)
 HISTSIZE=10000
 SAVEHIST=10000
 setopt share_history hist_expire_dups_first hist_ignore_dups hist_verify
@@ -23,7 +22,7 @@ setopt share_history hist_expire_dups_first hist_ignore_dups hist_verify
 [[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 [[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-eval $(gnome-keyring-daemon --start --components=secrets)
+command -v gnome-keyring-daemon >/dev/null && eval "$(gnome-keyring-daemon --start --components=secrets)"
 
 # Initialize tools
 command -v starship &> /dev/null && eval "$(starship init zsh)"
@@ -79,5 +78,5 @@ if [[ -n $ZELLIJ ]]; then
 fi
 
 # Load local overrides (not tracked in git)
-[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
-. "$HOME/.local/bin/env"
+[[ -f "$ZDOTDIR/.zshrc.local" ]] && source "$ZDOTDIR/.zshrc.local"
+[[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"

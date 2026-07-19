@@ -131,3 +131,15 @@ Cargo.lock
 build/
 dist/
 out/
+# --- secrets: never track (repo is public) ---
+**/auth.json
+**/oauth_creds.json
+**/google_accounts.json
+*.local
+# gh writes its auth token into hosts.yml on keyring-less hosts
+gh/.config/gh/hosts.yml
+
+# --- runtime state that may sit next to tracked config ---
+**/.zsh_history
+**/.zcompdump*
+**/.zsh_sessions/

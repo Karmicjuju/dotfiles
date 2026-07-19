@@ -1,0 +1,21 @@
+# CLI
+brew "git"
+brew "curl"
+brew "stow"
+brew "zsh"
+brew "zsh-syntax-highlighting"
+brew "zsh-autosuggestions"
+brew "neovim"
+brew "zoxide"
+brew "eza"
+brew "fzf"
+brew "starship"
+brew "zellij"
+brew "python@3.12"
+brew "netcat"
+brew "bind"
+
+# GUI
+cask "wezterm"
+cask "ghostty"
+cask "zed"
